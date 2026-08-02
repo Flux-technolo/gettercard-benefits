@@ -380,43 +380,14 @@
 <footer class="shell">Apresente sua carteirinha ativa para liberar o benefício.<br>Toque em um parceiro para ver os detalhes.</footer>
 
 <script>
-const parceiros = [
-  {nome:"KR Dental Studio", ramo:"Odontologia", beneficio:"5% de desconto em parcelamento\n10% de desconto à vista", contatos:["66992410194"]},
-  {nome:"Brenda Palhão", ramo:"Organizer", beneficio:"50% de desconto no valor final (independente da forma de pagamento)", contatos:["66996127585"]},
-  {nome:"Vanderléia Gonçalves", ramo:"Arquitetura e Interiores", beneficio:"Consultoria: 5% de desconto\nProjeto de interiores: 12% de desconto\nArquitetônico legal: 12% de desconto\nRegularização: 15% de desconto", contatos:["66999119995"]},
-  {nome:"Doutora Natália Maíne", ramo:"Harmonização Facial", beneficio:"10% de desconto em tratamento com ácido hialurônico (parcelamento e cartão de crédito)\n15% de desconto em tratamento com ácido hialurônico (à vista)\nIsenção do valor da consulta", contatos:["66981351013"]},
-  {nome:"Mano Parafusos (Maicon Tibes)", ramo:"Parafusos e Ferramentas", beneficio:"15% de desconto à vista\n10% de desconto em parcelamento", contatos:["66999190345"]},
-  {nome:"Paty Bossa Studio de Unhas", ramo:"Manicure, Pedicure e Design de Sobrancelhas", beneficio:"10% de desconto à vista\n5% de desconto no cartão de crédito", contatos:["66996291344"]},
-  {nome:"Elizandra Alves", ramo:"Consultoria Financeira", beneficio:"15% de desconto à vista\n5% de desconto no boleto até 30 dias", contatos:["66996024706"]},
-  {nome:"Intense Car (Higor Vidotto)", ramo:"Tapeçaria, Acessórios e Estética Automotiva", beneficio:"15% de desconto em toda a loja\nParcelamento em até 6x sem juros", contatos:["66996167802|Beatriz","35991456828|Michael"]},
-  {nome:"Marina Souza", ramo:"Produções de Conteúdo e Marketing Digital", beneficio:"10% de desconto em vídeo avulso\n15% de desconto em pacote de vídeo e gestão de Instagram (independente da forma de pagamento)", contatos:["66999845406"]},
-  {nome:"Ana Luiza Kruger", ramo:"Fotografia", beneficio:"20% de desconto no valor final e parcelamento em até 4x (independente da forma de pagamento)", contatos:["4998239056"]},
-  {nome:"Junior Goffi", ramo:"Produções de Conteúdo e Marketing Digital", beneficio:"15% de desconto no valor do contrato para serviços de posicionamento estratégico em redes sociais (pagamento por assinatura mensal via Pix ou boleto)", contatos:["66999559542"]},
-  {nome:"Mayara Borges", ramo:"Massagem Relaxante", beneficio:"20% de desconto na primeira massagem relaxante\n10% de desconto no pacote com 10 massagens relaxantes (pagamento: Pix ou dinheiro)\nAtendimento a domicílio para mulheres", contatos:["6596044145"]},
-  {nome:"Elen Barreto", ramo:"Nutrição", beneficio:"R$ 250,00 consulta presencial (sem retorno)\nR$ 699,00 plano presencial 3 meses (parcelamento em até 3x)\nR$ 1.200,00 plano presencial 6 meses (parcelamento em até 6x)\nR$ 209,00 consulta on-line (sem retorno)\nR$ 619,00 plano on-line 3 meses (parcelamento em até 3x)\nR$ 1.099,00 plano on-line 6 meses (parcelamento em até 6x)", contatos:["6696267080"]},
-  {nome:"Kárita Tainã", ramo:"Nutrição", beneficio:"Consulta de R$ 400,00 por R$ 200,00", contatos:["66996345084"]},
-  {nome:"Estilo Neris (Felipe Neris)", ramo:"Barbearia", beneficio:"10% de desconto em produtos e serviços (independente da forma de pagamento)", contatos:["6592618047"]},
-  {nome:"Newgarb (Dênia)", ramo:"Loja Masculina", beneficio:"15% de desconto na loja (independente da forma de pagamento)", contatos:["3498846203"]},
-  {nome:"Treine-C", ramo:"Academia", beneficio:"20% de desconto em qualquer plano das três unidades (exceto plano promocional), incluso familiares de 1º grau", contatos:["66999666851"]},
-  {nome:"Priscila Svierk", ramo:"Nutrição Infantil", beneficio:"30% de desconto na primeira consulta Raízes (avaliação nutricional infantil), em Pix ou crédito à vista", contatos:["66996545295"]},
-  {nome:"Cleonice Ribeiro", ramo:"Manicure e Pedicure", beneficio:"10% de desconto em pagamentos à vista (Pix e débito)\n5% de desconto em pagamentos no crédito", contatos:["66999210934"]},
-  {nome:"Farmácia Alquimia", ramo:"Farmácia de Manipulação", beneficio:"15% de desconto em pagamentos à vista (Pix e débito)\n10% de desconto em pagamentos parcelados no cartão de crédito", contatos:["66981126561"]},
-  {nome:"Fábrica dos Óculos", ramo:"Ótica e Rejoalheria", beneficio:"30% de desconto em óculos de grau e óculos de sol (exceto promocionais e não acumulativo com outras campanhas)\n25% de desconto em relógios (exceto promocionais e não acumulativo com outras campanhas)\nVálido para pagamentos à vista ou cartão de crédito em até 10x (não válido com Cartão Brasil Card e financeiras)", contatos:["66999791272"]},
-  {nome:"Miss Beleza Sinop (Pedro Alberto)", ramo:"Loja de Maquiagem, Cosméticos e Produtos de Beleza", beneficio:"20% de desconto em compras à vista (Pix, dinheiro, débito ou crédito à vista), exceto itens em promoção\n2% de desconto em parcelamento até 2x\nParcelamento em até 10x sem juros", contatos:["66996779742"]},
-  {nome:"Muzel Planejados", ramo:"Móveis Planejados", beneficio:"Até 18% de desconto para pagamentos à vista\n12% de desconto no cartão de crédito em até 12x sem juros", contatos:["66999264265"]},
-  {nome:"Studio Fer Maia Beauty", ramo:"Cílios, Sobrancelha e Epilação", beneficio:"15% de desconto no primeiro atendimento (independente da forma de pagamento)", contatos:["66996703056"]},
-  {nome:"Clínica Luciana Duarte Beauty", ramo:"Cílios e Sobrancelhas", beneficio:"10% de desconto para pagamentos via Pix\n5% de desconto em pagamentos no débito ou crédito, parcelamento em até 2x sem juros\nVálido para: extensão de cílios, lash lifting, design de sobrancelha com henna, design com tintura, micropigmentação, nanopigmentação e brow lamination", contatos:["11975019270"]},
-  {nome:"Riffel Seguros", ramo:"Contratação de Seguros", beneficio:"15% a 25% de desconto nas contratações de seguro, independente da forma de pagamento\nConsultoria de risco gratuita", contatos:["66996819303"]},
-  {nome:"Fonoaudiologia Integrada", ramo:"Fonoaudiologia", beneficio:"Avaliação fonoaudiológica gratuita (ênfase em crianças com atraso de fala, diagnóstico em TEA e TDAH)\n50% de desconto em todas as sessões de fonoaudiologia (se precisar de tratamento)", contatos:["6599944088"]},
-  {nome:"Agência ERA (Juliana Martiniano)", ramo:"Marketing Digital", beneficio:"15% de desconto nos pacotes da agência", contatos:["66992732642"]},
-];
+let parceiros = [];
 
 const listEl = document.getElementById('list');
 const chipsEl = document.getElementById('chips');
 const countEl = document.getElementById('count');
 const searchEl = document.getElementById('search');
 
-const ramos = ["Todos", ...Array.from(new Set(parceiros.map(p=>p.ramo))).sort()];
+let ramos = ["Todos"];
 let activeRamo = "Todos";
 let query = "";
 
@@ -502,26 +473,43 @@ function render(){
   });
 }
 
-ramos.forEach(r=>{
-  const chip = document.createElement('button');
-  chip.type = 'button';
-  chip.className = 'chip' + (r === activeRamo ? ' active' : '');
-  chip.textContent = r;
-  chip.addEventListener('click', ()=>{
-    activeRamo = r;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    render();
+function renderChips(){
+  chipsEl.innerHTML = '';
+  ramos.forEach(r=>{
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip' + (r === activeRamo ? ' active' : '');
+    chip.textContent = r;
+    chip.addEventListener('click', ()=>{
+      activeRamo = r;
+      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      render();
+    });
+    chipsEl.appendChild(chip);
   });
-  chipsEl.appendChild(chip);
-});
+}
 
 searchEl.addEventListener('input', (e)=>{
   query = e.target.value;
   render();
 });
 
-render();
+async function loadParceiros(){
+  listEl.innerHTML = '<div class="empty">Carregando parceiros…</div>';
+  try{
+    const res = await fetch('/api/parceiros');
+    if(!res.ok) throw new Error('Falha ao carregar');
+    parceiros = await res.json();
+    ramos = ["Todos", ...Array.from(new Set(parceiros.map(p=>p.ramo))).sort()];
+    renderChips();
+    render();
+  }catch(err){
+    listEl.innerHTML = '<div class="empty">Não foi possível carregar os parceiros agora. Tente novamente em instantes.</div>';
+  }
+}
+
+loadParceiros();
 </script>
 </body>
 </html>
