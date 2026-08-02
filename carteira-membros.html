@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getter Card · Carteira de Membros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold-light:#EFD8A5;
+    --gold-mid:#CBA164;
+    --bronze:#8C6136;
+    --bronze-deep:#5E4023;
+    --ink:#2A1D10;
+    --ink-soft:#6B5539;
+    --pill:#F2E4C8;
+    --pill-line:#DFC9A2;
+    --cream:#F7EFDD;
+    --cream-card:#FFFCF4;
+    --ember:#B6472C;
+    --line:rgba(42,29,16,0.12);
+    --shadow-sm:0 1px 2px rgba(94,64,35,.06), 0 4px 12px rgba(94,64,35,.07);
+    --shadow-lg:0 10px 30px rgba(94,64,35,.16);
+    --radius:16px;
+    --pad:16px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-wrap:pretty;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  a{color:var(--ember);}
+  a:hover{color:var(--bronze-deep);}
+  .shell{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 max(14px, env(safe-area-inset-left)) 0 max(14px, env(safe-area-inset-right));
+  }
+
+  /* ---------- HEADER ---------- */
+  .card-banner{
+    position:relative;
+    margin:20px 0 4px;
+    border-radius:20px;
+    overflow:hidden;
+    background:radial-gradient(120% 90% at 50% -10%, #FFFDF7 0%, var(--cream-card) 45%, #F3E7CE 100%);
+    box-shadow:var(--shadow-lg);
+    border:1px solid rgba(203,161,100,.45);
+  }
+  .card-banner::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0;
+    height:5px;
+    background:linear-gradient(90deg, var(--gold-light), var(--gold-mid) 35%, var(--bronze) 65%, var(--gold-light));
+  }
+  .banner-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:16px;
+    padding:30px 22px 26px;
+  }
+  .logo-wrap{ display:block; width:auto; }
+  .logo-wrap img{ display:block; height:96px; width:auto; max-width:100%; }
+  .banner-rule{
+    width:100%; max-width:220px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .banner-rule::before,
+  .banner-rule::after{
+    content:"";
+    flex:1; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(140,97,54,.55), transparent);
+  }
+  .banner-rule span{
+    width:5px; height:5px; border-radius:50%;
+    background:var(--ember); flex:0 0 auto;
+  }
+  .banner-eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--bronze);
+    font-weight:600;
+    margin:0;
+  }
+  .banner-title{
+    font-size:clamp(17px, 4.9vw, 22px);
+    font-weight:700;
+    letter-spacing:-.01em;
+    line-height:1.32;
+    color:var(--ink);
+    margin:0;
+    max-width:24ch;
+    text-wrap:balance;
+  }
+  .banner-title strong{ font-weight:900; color:var(--bronze-deep); white-space:nowrap; }
+
+  /* ---------- CONTROLS ---------- */
+  .controls-wrap{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(var(--cream) 78%, rgba(247,239,221,0));
+    padding-top:12px;
+  }
+  .controls{ padding:0 0 10px; }
+  .search-field{ position:relative; display:flex; align-items:center; }
+  .search-field::before{
+    content:"";
+    position:absolute; left:15px;
+    width:13px; height:13px;
+    border:2px solid var(--bronze);
+    border-radius:50%;
+    opacity:.7;
+    pointer-events:none;
+  }
+  .search-field::after{
+    content:"";
+    position:absolute; left:26px; top:calc(50% + 3px);
+    width:7px; height:2px;
+    background:var(--bronze);
+    transform:rotate(45deg);
+    opacity:.7;
+    border-radius:2px;
+    pointer-events:none;
+  }
+  .search{
+    width:100%;
+    min-height:48px;
+    padding:13px 14px 13px 40px;
+    border-radius:12px;
+    border:1px solid var(--pill-line);
+    background:var(--cream-card);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    color:var(--ink);
+    box-shadow:var(--shadow-sm);
+  }
+  .search::placeholder{color:#9C866A;}
+  .search:focus{outline:2px solid var(--ember); outline-offset:1px; border-color:transparent;}
+  .chips{
+    display:flex; gap:8px;
+    overflow-x:auto;
+    margin-top:10px;
+    padding:2px 0 6px;
+    scroll-snap-type:x proximity;
+    -ms-overflow-style:none; scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto;
+    scroll-snap-align:start;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    min-height:36px;
+    display:inline-flex; align-items:center;
+    padding:0 14px;
+    border-radius:999px;
+    border:1px solid var(--pill-line);
+    background:var(--cream-card);
+    color:var(--bronze-deep);
+    white-space:nowrap;
+    cursor:pointer;
+    user-select:none;
+    transition:background .15s ease, color .15s ease, transform .12s ease;
+  }
+  .chip:active{transform:scale(.97);}
+  .chip.active{
+    background:var(--bronze-deep);
+    color:var(--gold-light);
+    border-color:var(--bronze-deep);
+    box-shadow:var(--shadow-sm);
+  }
+  .count{
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin:4px 0 0;
+  }
+
+  /* ---------- LIST / CARDS ---------- */
+  .list{
+    padding:12px 0 32px;
+    display:grid;
+    grid-template-columns:1fr;
+    align-items:start;
+    gap:10px;
+  }
+  .card{
+    background:var(--cream-card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:var(--shadow-sm);
+    transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .card.open{box-shadow:var(--shadow-lg); border-color:rgba(140,97,54,.35);}
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    min-height:64px;
+    padding:12px 14px;
+    background:none;
+    border:0;
+    text-align:left;
+    font:inherit;
+    color:inherit;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .card-head:focus-visible{outline:2px solid var(--ember); outline-offset:-3px;}
+  .badge{
+    flex:0 0 auto;
+    width:42px; height:42px;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--gold-light), var(--bronze));
+    color:var(--bronze-deep);
+    font-size:13.5px;
+    font-weight:800;
+    letter-spacing:.02em;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+  }
+  .head-text{flex:1; min-width:0;}
+  .name{
+    font-size:15.5px;
+    font-weight:700;
+    line-height:1.25;
+    margin:0;
+    color:var(--ink);
+  }
+  .ramo{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:3px 0 0;
+    font-weight:600;
+  }
+  .chevron{
+    flex:0 0 auto;
+    width:26px; height:26px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    background:rgba(182,71,44,.09);
+    transition:transform .25s ease, background .2s ease;
+  }
+  .chevron::after{
+    content:"";
+    width:7px; height:7px;
+    border-right:2px solid var(--ember);
+    border-bottom:2px solid var(--ember);
+    transform:translateY(-2px) rotate(45deg);
+  }
+  .card.open .chevron{transform:rotate(180deg); background:rgba(182,71,44,.16);}
+  .card-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+  }
+  .card-body-inner{
+    padding:0 14px 16px;
+    font-family:'Inter',sans-serif;
+  }
+  .beneficio-pill{
+    background:var(--pill);
+    border:1px solid var(--pill-line);
+    border-radius:12px;
+    padding:12px 14px;
+    margin:0 0 12px;
+  }
+  .beneficio-list{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .beneficio-list li{
+    position:relative;
+    padding-left:16px;
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .beneficio-list li::before{
+    content:"";
+    position:absolute; left:0; top:8px;
+    width:6px; height:6px;
+    border-radius:2px;
+    background:var(--ember);
+  }
+  .wa-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .wa-btn{
+    flex:1 1 auto;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    min-height:46px;
+    background:var(--bronze-deep);
+    color:var(--gold-light);
+    text-decoration:none;
+    font-size:13.5px;
+    font-weight:700;
+    padding:10px 16px;
+    border-radius:10px;
+    transition:background .15s ease, transform .12s ease;
+  }
+  .wa-btn:hover{background:#4A3119; color:var(--gold-light);}
+  .wa-btn:active{transform:scale(.98);}
+  .wa-icon{ flex:0 0 auto; color:#5CD07A; }
+  .empty{
+    padding:48px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    border:1px dashed var(--pill-line);
+    border-radius:14px;
+    background:rgba(255,252,244,.6);
+  }
+  footer{
+    text-align:center;
+    padding:8px 8px 32px;
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    line-height:1.7;
+    color:var(--ink-soft);
+  }
+
+  @media (min-width:640px){
+    .banner-inner{padding:38px 28px 32px;}
+    .logo-wrap img{height:118px;}
+    .list{grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;}
+    .card.open{grid-column:1 / -1;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="shell"><div class="card-banner">
+  <div class="banner-inner">
+    <div class="logo-wrap"><img src="assets/getchurch-logo.png" alt="Get Church"></div>
+    <div class="banner-rule"><span></span></div>
+    <p class="banner-eyebrow">Getter Card · Carteira de Membros</p>
+    <h1 class="banner-title">Confira os parceiros dos membros portadores do <strong>Getter Card</strong></h1>
+  </div>
+</div></header>
+
+<div class="controls-wrap">
+  <div class="shell controls">
+    <div class="search-field">
+      <input class="search" id="search" type="search" autocomplete="off" placeholder="Buscar por nome ou ramo" aria-label="Buscar parceiro por nome ou ramo">
+    </div>
+    <div class="chips" id="chips" role="tablist" aria-label="Filtrar por ramo"></div>
+    <p class="count" id="count" aria-live="polite"></p>
+  </div>
+</div>
+
+<main class="shell">
+  <div class="list" id="list"></div>
+</main>
+
+<footer class="shell">Apresente sua carteirinha ativa para liberar o benefício.<br>Toque em um parceiro para ver os detalhes.</footer>
+
+<script>
+const parceiros = [
+  {nome:"KR Dental Studio", ramo:"Odontologia", beneficio:"5% de desconto em parcelamento\n10% de desconto à vista", contatos:["66992410194"]},
+  {nome:"Brenda Palhão", ramo:"Organizer", beneficio:"50% de desconto no valor final (independente da forma de pagamento)", contatos:["66996127585"]},
+  {nome:"Vanderléia Gonçalves", ramo:"Arquitetura e Interiores", beneficio:"Consultoria: 5% de desconto\nProjeto de interiores: 12% de desconto\nArquitetônico legal: 12% de desconto\nRegularização: 15% de desconto", contatos:["66999119995"]},
+  {nome:"Doutora Natália Maíne", ramo:"Harmonização Facial", beneficio:"10% de desconto em tratamento com ácido hialurônico (parcelamento e cartão de crédito)\n15% de desconto em tratamento com ácido hialurônico (à vista)\nIsenção do valor da consulta", contatos:["66981351013"]},
+  {nome:"Mano Parafusos (Maicon Tibes)", ramo:"Parafusos e Ferramentas", beneficio:"15% de desconto à vista\n10% de desconto em parcelamento", contatos:["66999190345"]},
+  {nome:"Paty Bossa Studio de Unhas", ramo:"Manicure, Pedicure e Design de Sobrancelhas", beneficio:"10% de desconto à vista\n5% de desconto no cartão de crédito", contatos:["66996291344"]},
+  {nome:"Elizandra Alves", ramo:"Consultoria Financeira", beneficio:"15% de desconto à vista\n5% de desconto no boleto até 30 dias", contatos:["66996024706"]},
+  {nome:"Intense Car (Higor Vidotto)", ramo:"Tapeçaria, Acessórios e Estética Automotiva", beneficio:"15% de desconto em toda a loja\nParcelamento em até 6x sem juros", contatos:["66996167802|Beatriz","35991456828|Michael"]},
+  {nome:"Marina Souza", ramo:"Produções de Conteúdo e Marketing Digital", beneficio:"10% de desconto em vídeo avulso\n15% de desconto em pacote de vídeo e gestão de Instagram (independente da forma de pagamento)", contatos:["66999845406"]},
+  {nome:"Ana Luiza Kruger", ramo:"Fotografia", beneficio:"20% de desconto no valor final e parcelamento em até 4x (independente da forma de pagamento)", contatos:["4998239056"]},
+  {nome:"Junior Goffi", ramo:"Produções de Conteúdo e Marketing Digital", beneficio:"15% de desconto no valor do contrato para serviços de posicionamento estratégico em redes sociais (pagamento por assinatura mensal via Pix ou boleto)", contatos:["66999559542"]},
+  {nome:"Mayara Borges", ramo:"Massagem Relaxante", beneficio:"20% de desconto na primeira massagem relaxante\n10% de desconto no pacote com 10 massagens relaxantes (pagamento: Pix ou dinheiro)\nAtendimento a domicílio para mulheres", contatos:["6596044145"]},
+  {nome:"Elen Barreto", ramo:"Nutrição", beneficio:"R$ 250,00 consulta presencial (sem retorno)\nR$ 699,00 plano presencial 3 meses (parcelamento em até 3x)\nR$ 1.200,00 plano presencial 6 meses (parcelamento em até 6x)\nR$ 209,00 consulta on-line (sem retorno)\nR$ 619,00 plano on-line 3 meses (parcelamento em até 3x)\nR$ 1.099,00 plano on-line 6 meses (parcelamento em até 6x)", contatos:["6696267080"]},
+  {nome:"Kárita Tainã", ramo:"Nutrição", beneficio:"Consulta de R$ 400,00 por R$ 200,00", contatos:["66996345084"]},
+  {nome:"Estilo Neris (Felipe Neris)", ramo:"Barbearia", beneficio:"10% de desconto em produtos e serviços (independente da forma de pagamento)", contatos:["6592618047"]},
+  {nome:"Newgarb (Dênia)", ramo:"Loja Masculina", beneficio:"15% de desconto na loja (independente da forma de pagamento)", contatos:["3498846203"]},
+  {nome:"Treine-C", ramo:"Academia", beneficio:"20% de desconto em qualquer plano das três unidades (exceto plano promocional), incluso familiares de 1º grau", contatos:["66999666851"]},
+  {nome:"Priscila Svierk", ramo:"Nutrição Infantil", beneficio:"30% de desconto na primeira consulta Raízes (avaliação nutricional infantil), em Pix ou crédito à vista", contatos:["66996545295"]},
+  {nome:"Cleonice Ribeiro", ramo:"Manicure e Pedicure", beneficio:"10% de desconto em pagamentos à vista (Pix e débito)\n5% de desconto em pagamentos no crédito", contatos:["66999210934"]},
+  {nome:"Farmácia Alquimia", ramo:"Farmácia de Manipulação", beneficio:"15% de desconto em pagamentos à vista (Pix e débito)\n10% de desconto em pagamentos parcelados no cartão de crédito", contatos:["66981126561"]},
+  {nome:"Fábrica dos Óculos", ramo:"Ótica e Rejoalheria", beneficio:"30% de desconto em óculos de grau e óculos de sol (exceto promocionais e não acumulativo com outras campanhas)\n25% de desconto em relógios (exceto promocionais e não acumulativo com outras campanhas)\nVálido para pagamentos à vista ou cartão de crédito em até 10x (não válido com Cartão Brasil Card e financeiras)", contatos:["66999791272"]},
+  {nome:"Miss Beleza Sinop (Pedro Alberto)", ramo:"Loja de Maquiagem, Cosméticos e Produtos de Beleza", beneficio:"20% de desconto em compras à vista (Pix, dinheiro, débito ou crédito à vista), exceto itens em promoção\n2% de desconto em parcelamento até 2x\nParcelamento em até 10x sem juros", contatos:["66996779742"]},
+  {nome:"Muzel Planejados", ramo:"Móveis Planejados", beneficio:"Até 18% de desconto para pagamentos à vista\n12% de desconto no cartão de crédito em até 12x sem juros", contatos:["66999264265"]},
+  {nome:"Studio Fer Maia Beauty", ramo:"Cílios, Sobrancelha e Epilação", beneficio:"15% de desconto no primeiro atendimento (independente da forma de pagamento)", contatos:["66996703056"]},
+  {nome:"Clínica Luciana Duarte Beauty", ramo:"Cílios e Sobrancelhas", beneficio:"10% de desconto para pagamentos via Pix\n5% de desconto em pagamentos no débito ou crédito, parcelamento em até 2x sem juros\nVálido para: extensão de cílios, lash lifting, design de sobrancelha com henna, design com tintura, micropigmentação, nanopigmentação e brow lamination", contatos:["11975019270"]},
+  {nome:"Riffel Seguros", ramo:"Contratação de Seguros", beneficio:"15% a 25% de desconto nas contratações de seguro, independente da forma de pagamento\nConsultoria de risco gratuita", contatos:["66996819303"]},
+  {nome:"Fonoaudiologia Integrada", ramo:"Fonoaudiologia", beneficio:"Avaliação fonoaudiológica gratuita (ênfase em crianças com atraso de fala, diagnóstico em TEA e TDAH)\n50% de desconto em todas as sessões de fonoaudiologia (se precisar de tratamento)", contatos:["6599944088"]},
+  {nome:"Agência ERA (Juliana Martiniano)", ramo:"Marketing Digital", beneficio:"15% de desconto nos pacotes da agência", contatos:["66992732642"]},
+];
+
+const listEl = document.getElementById('list');
+const chipsEl = document.getElementById('chips');
+const countEl = document.getElementById('count');
+const searchEl = document.getElementById('search');
+
+const ramos = ["Todos", ...Array.from(new Set(parceiros.map(p=>p.ramo))).sort()];
+let activeRamo = "Todos";
+let query = "";
+
+function initials(nome){
+  return nome.split(/[\s(]/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+}
+
+function waLink(raw){
+  const digits = raw.split('|')[0].replace(/\D/g,'');
+  if(!digits) return null;
+  const full = digits.startsWith('55') ? digits : '55'+digits;
+  return `https://wa.me/${full}`;
+}
+
+function contatoLabel(raw){
+  const parts = raw.split('|');
+  return parts[1] ? `WhatsApp · ${parts[1]}` : 'Falar no WhatsApp';
+}
+
+function render(){
+  const q = query.trim().toLowerCase();
+  const filtered = parceiros.filter(p=>{
+    const matchesRamo = activeRamo === "Todos" || p.ramo === activeRamo;
+    const matchesQuery = !q || p.nome.toLowerCase().includes(q) || p.ramo.toLowerCase().includes(q);
+    return matchesRamo && matchesQuery;
+  });
+
+  countEl.textContent = `${filtered.length} parceiro${filtered.length===1?'':'s'}`;
+
+  listEl.innerHTML = '';
+  if(filtered.length === 0){
+    listEl.innerHTML = '<div class="empty">Nenhum parceiro encontrado.</div>';
+    return;
+  }
+
+  filtered.forEach((p)=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const btns = p.contatos.map(c=>{
+      const link = waLink(c);
+      if(!link) return '';
+      return `<a class="wa-btn" href="${link}" target="_blank" rel="noopener"><svg class="wa-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.25 8.24a8.23 8.23 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24Zm-4.6 4.4c-.21 0-.56.08-.85.39-.29.31-1.12 1.09-1.12 2.66s1.15 3.08 1.31 3.29c.16.21 2.22 3.39 5.39 4.62.75.29 1.34.46 1.8.59.76.24 1.44.21 1.99.13.61-.09 1.87-.76 2.13-1.5.26-.74.26-1.37.18-1.5-.08-.13-.29-.21-.6-.37-.31-.16-1.85-.91-2.13-1.02-.29-.1-.5-.16-.7.16-.21.31-.81 1.01-.99 1.22-.18.21-.37.24-.68.08-.31-.16-1.32-.49-2.51-1.55-.93-.83-1.55-1.85-1.74-2.16-.18-.31-.02-.48.14-.63.14-.14.31-.37.47-.55.16-.19.21-.32.31-.53.1-.21.05-.39-.03-.55-.08-.16-.7-1.7-.96-2.32-.25-.61-.51-.53-.7-.54-.18 0-.39-.01-.6-.01Z"/></svg>${contatoLabel(c)}</a>`;
+    }).join('');
+    const itens = p.beneficio.split('\n').filter(Boolean).map(l=>`<li>${l}</li>`).join('');
+    card.innerHTML = `
+      <div class="card-head" role="button" tabindex="0" aria-expanded="false">
+        <div class="badge">${initials(p.nome)}</div>
+        <span class="head-text">
+          <p class="name">${p.nome}</p>
+          <p class="ramo">${p.ramo}</p>
+        </span>
+        <span class="chevron" aria-hidden="true"></span>
+      </div>
+      <div class="card-body">
+        <div class="card-body-inner">
+          <div class="beneficio-pill"><ul class="beneficio-list">${itens}</ul></div>
+          <div class="wa-row">${btns}</div>
+        </div>
+      </div>
+    `;
+    const head = card.querySelector('.card-head');
+    const body = card.querySelector('.card-body');
+    const toggle = ()=>{
+      const isOpen = card.classList.contains('open');
+      document.querySelectorAll('.card.open').forEach(c=>{
+        if(c!==card){ c.classList.remove('open'); c.querySelector('.card-head').setAttribute('aria-expanded','false'); c.querySelector('.card-body').style.maxHeight = null; }
+      });
+      if(isOpen){
+        card.classList.remove('open');
+        head.setAttribute('aria-expanded','false');
+        body.style.maxHeight = null;
+      } else {
+        card.classList.add('open');
+        head.setAttribute('aria-expanded','true');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    };
+    head.addEventListener('click', toggle);
+    head.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+    listEl.appendChild(card);
+  });
+}
+
+ramos.forEach(r=>{
+  const chip = document.createElement('button');
+  chip.type = 'button';
+  chip.className = 'chip' + (r === activeRamo ? ' active' : '');
+  chip.textContent = r;
+  chip.addEventListener('click', ()=>{
+    activeRamo = r;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    render();
+  });
+  chipsEl.appendChild(chip);
+});
+
+searchEl.addEventListener('input', (e)=>{
+  query = e.target.value;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
