@@ -57,6 +57,22 @@ function normCell(s) {
   return (s || '').replace(/\s+/g, ' ').trim();
 }
 
+// remove sufixo com o nome do responsável, ex: "Empresa (Fulano)" ou "Empresa - Fulano"
+function stripOwnerSuffix(nome) {
+  return nome
+    .replace(/\s*\([^)]*\)\s*$/, '')
+    .replace(/\s+[-–—]\s+\S.*$/, '')
+    .trim();
+}
+
+// correções de grafia conhecidas na planilha (aplicadas após o title case)
+const SPELLING_FIXES = [
+  [/\bRejoaleria\b/gi, 'Rejoalheria'],
+];
+function applySpellingFixes(str) {
+  return SPELLING_FIXES.reduce((s, [pattern, fix]) => s.replace(pattern, fix), str);
+}
+
 function contatoFromCell(contatoCell) {
   if (!contatoCell) return null;
   const lines = contatoCell.split('\n').map(s => s.trim()).filter(Boolean);
@@ -81,8 +97,8 @@ function sheetRowsToParceiros(csvText) {
     // só entra na lista quando o cadastro está completo
     if (!nomeRaw || !ramoRaw || !beneficioRaw || contatos.length === 0) continue;
 
-    const nome = toTitleCase(nomeRaw);
-    const ramo = toTitleCase(ramoRaw);
+    const nome = applySpellingFixes(toTitleCase(stripOwnerSuffix(nomeRaw)));
+    const ramo = applySpellingFixes(toTitleCase(ramoRaw));
     const beneficio = beneficioRaw.split('\n').map(l => l.trim()).filter(Boolean).map(toSentenceCase).join('\n');
 
     parceiros.push({ nome, ramo, beneficio, contatos });
