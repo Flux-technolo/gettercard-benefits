@@ -85,6 +85,8 @@ const PT_BR_FIXES = [
   ['brasil card', 'Brasil Card'],
   ['kr dental', 'KR Dental'],
   ['agência era', 'Agência ERA'],
+  ['doutora', 'Dra.'],
+  ['doutor', 'Dr.'],
 ].map(([find, fix]) => [wordBoundaryRegex(find), fix]);
 
 function applyPtBrFixes(str) {
