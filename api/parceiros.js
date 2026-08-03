@@ -100,6 +100,11 @@ function endsWithDangling(text) {
   return !!m && DANGLING_WORDS.has(m[1].toLowerCase());
 }
 
+function startsWithDangling(text) {
+  const m = text.trim().match(/^([a-zà-öø-ÿ]+)\b/i);
+  return !!m && DANGLING_WORDS.has(m[1].toLowerCase());
+}
+
 function parenBalance(text) {
   let bal = 0;
   for (const c of text) { if (c === '(') bal++; else if (c === ')') bal--; }
@@ -112,7 +117,9 @@ function mergeBulletLines(lines) {
     const line = raw.replace(/\s+/g, ' ').trim();
     if (!line) continue;
     const prev = bullets[bullets.length - 1];
-    const continues = prev !== undefined && (line.startsWith('(') || parenBalance(prev) > 0 || endsWithDangling(prev));
+    const continues = prev !== undefined && (
+      line.startsWith('(') || parenBalance(prev) > 0 || endsWithDangling(prev) || startsWithDangling(line) || /[,;]\s*$/.test(prev)
+    );
     if (continues) {
       bullets[bullets.length - 1] = `${prev} ${line}`;
     } else {
