@@ -43,12 +43,12 @@ function toTitleCase(str) {
   }).join(' ');
 }
 
-const PROPER = { pix: 'Pix', tea: 'TEA', tdah: 'TDAH' };
+const PROPER = { pix: 'Pix', tea: 'TEA', tdah: 'TDAH', instagram: 'Instagram', whatsapp: 'WhatsApp' };
 
 function toSentenceCase(line) {
   let s = line.toLowerCase().trim();
   s = s.replace(/r\$/g, 'R$');
-  s = s.replace(/\b(pix|tea|tdah)\b/gi, (m) => PROPER[m.toLowerCase()]);
+  s = s.replace(/\b(pix|tea|tdah|instagram|whatsapp)\b/gi, (m) => PROPER[m.toLowerCase()]);
   s = s.replace(/(^\s*[a-zà-ú])|([.!?]\s+[a-zà-ú])|(:\s*[a-zà-ú])/gi, (m) => m.toUpperCase());
   return s.trim();
 }
@@ -65,12 +65,61 @@ function stripOwnerSuffix(nome) {
     .trim();
 }
 
-// correções de grafia conhecidas na planilha (aplicadas após o title case)
-const SPELLING_FIXES = [
-  [/\bRejoaleria\b/gi, 'Rejoalheria'],
-];
-function applySpellingFixes(str) {
-  return SPELLING_FIXES.reduce((s, [pattern, fix]) => s.replace(pattern, fix), str);
+// \b do JS não reconhece corretamente limite de palavra ao lado de vogais acentuadas
+// (ex: "\bá vista\b" nunca casa) — por isso usamos lookaround como substituto.
+function wordBoundaryRegex(phrase) {
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![a-zà-öø-ÿ])${escaped}(?![a-zà-öø-ÿ])`, 'gi');
+}
+
+// erros recorrentes de PT-BR/digitação encontrados na planilha (aplicados no texto já formatado)
+const PT_BR_FIXES = [
+  ['a vista', 'à vista'],
+  ['á vista', 'à vista'],
+  ['debíto', 'débito'],
+  ['domicilio', 'domicílio'],
+  ['à domicílio', 'a domicílio'], // "domicílio" é masculino, não tem crase
+  ['fonoaudiologa', 'fonoaudiológica'],
+  ['presencial6', 'presencial 6'],
+  ['Rejoaleria', 'Rejoalheria'],
+  ['brasil card', 'Brasil Card'],
+  ['kr dental', 'KR Dental'],
+  ['agência era', 'Agência ERA'],
+].map(([find, fix]) => [wordBoundaryRegex(find), fix]);
+
+function applyPtBrFixes(str) {
+  return PT_BR_FIXES.reduce((s, [pattern, fix]) => s.replace(pattern, fix), str);
+}
+
+// linhas da célula de BENEFÍCIO às vezes são só quebra visual, não um novo item da lista.
+// junta a linha com a anterior quando ela é claramente uma continuação da frase.
+const DANGLING_WORDS = new Set(['para', 'com', 'de', 'em', 'e', 'ou', 'no', 'na', 'a', 'à', 'sem', 'por', 'que', 'do', 'da', 'dos', 'das', 'ao', 'aos']);
+
+function endsWithDangling(text) {
+  const m = text.trim().match(/([a-zà-öø-ÿ]+)$/i);
+  return !!m && DANGLING_WORDS.has(m[1].toLowerCase());
+}
+
+function parenBalance(text) {
+  let bal = 0;
+  for (const c of text) { if (c === '(') bal++; else if (c === ')') bal--; }
+  return bal;
+}
+
+function mergeBulletLines(lines) {
+  const bullets = [];
+  for (const raw of lines) {
+    const line = raw.replace(/\s+/g, ' ').trim();
+    if (!line) continue;
+    const prev = bullets[bullets.length - 1];
+    const continues = prev !== undefined && (line.startsWith('(') || parenBalance(prev) > 0 || endsWithDangling(prev));
+    if (continues) {
+      bullets[bullets.length - 1] = `${prev} ${line}`;
+    } else {
+      bullets.push(line);
+    }
+  }
+  return bullets;
 }
 
 function contatoFromCell(contatoCell) {
@@ -97,9 +146,12 @@ function sheetRowsToParceiros(csvText) {
     // só entra na lista quando o cadastro está completo
     if (!nomeRaw || !ramoRaw || !beneficioRaw || contatos.length === 0) continue;
 
-    const nome = applySpellingFixes(toTitleCase(stripOwnerSuffix(nomeRaw)));
-    const ramo = applySpellingFixes(toTitleCase(ramoRaw));
-    const beneficio = beneficioRaw.split('\n').map(l => l.trim()).filter(Boolean).map(toSentenceCase).join('\n');
+    const nome = applyPtBrFixes(toTitleCase(stripOwnerSuffix(nomeRaw)));
+    const ramo = applyPtBrFixes(toTitleCase(ramoRaw));
+    const beneficio = mergeBulletLines(beneficioRaw.split('\n'))
+      .map(toSentenceCase)
+      .map(applyPtBrFixes)
+      .join('\n');
 
     parceiros.push({ nome, ramo, beneficio, contatos });
   }

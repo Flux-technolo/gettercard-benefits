@@ -27,6 +27,7 @@
   }
   *{box-sizing:border-box;}
   html{-webkit-text-size-adjust:100%;}
+  html, body{ overflow-x:hidden; max-width:100%; }
   body{
     margin:0;
     font-family:'Poppins',sans-serif;
@@ -41,7 +42,7 @@
   .shell{
     max-width:760px;
     margin:0 auto;
-    padding:0 max(14px, env(safe-area-inset-left)) 0 max(14px, env(safe-area-inset-right));
+    padding:0 max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left));
   }
 
   /* ---------- HEADER ---------- */
@@ -108,7 +109,7 @@
   /* ---------- CONTROLS ---------- */
   .controls-wrap{
     position:sticky; top:0; z-index:20;
-    background:linear-gradient(var(--cream) 78%, rgba(247,239,221,0));
+    background:var(--cream);
     padding-top:12px;
   }
   .controls{ padding:0 0 10px; }
@@ -243,6 +244,7 @@
     line-height:1.25;
     margin:0;
     color:var(--ink);
+    overflow-wrap:break-word;
   }
   .ramo{
     font-family:'Inter',sans-serif;
@@ -252,6 +254,7 @@
     color:var(--ink-soft);
     margin:3px 0 0;
     font-weight:600;
+    overflow-wrap:break-word;
   }
   .chevron{
     flex:0 0 auto;
@@ -295,6 +298,7 @@
     padding-left:16px;
     font-size:13.5px;
     line-height:1.5;
+    overflow-wrap:break-word;
     color:var(--ink);
     font-weight:500;
   }
